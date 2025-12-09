@@ -21,10 +21,10 @@
 		<Nullable>enable</Nullable>
 
 		<!-- Display name -->
-		<ApplicationTitle>RawGames</ApplicationTitle>
+		<ApplicationTitle>Movie App</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.rawgames</ApplicationId>
+		<ApplicationId>com.sleepyy51.movies</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
