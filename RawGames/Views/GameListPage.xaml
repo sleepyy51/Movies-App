@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModel="clr-namespace:RawGames.ViewModel"
+             xmlns:model="clr-namespace:RawGames.Model"
+             x:Class="RawGames.Views.GameListPage"
+             x:DataType="viewModel:GameListViewModel"
+             BackgroundColor="#0F0F0F"
+             Title="The Movie Database">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Barra de búsqueda -->
+        <SearchBar Grid.Row="0"
+                   Placeholder="Buscar películas..."
+                   Text="{Binding SearchText}"
+                   SearchCommand="{Binding LoadGamesCommand}"
+                   Margin="16,20,16,10"
+                   BackgroundColor="#1C1C1C"
+                   TextColor="White"
+                   PlaceholderColor="#777"
+                   CancelButtonColor="White"
+                   FontSize="16"
+                   HeightRequest="48">
+            <SearchBar.Shadow>
+                <Shadow Offset="0,4" Radius="8" />
+            </SearchBar.Shadow>
+        </SearchBar>
+
+        <!-- Lista -->
+        <RefreshView Grid.Row="1"
+                     IsRefreshing="{Binding IsBusy}"
+                     Command="{Binding RefreshCommand}">
+            <CollectionView ItemsSource="{Binding Games}"
+                            SelectionMode="Single"
+                            SelectionChangedCommand="{Binding GameSelectedCommand}"
+                            SelectionChangedCommandParameter="{Binding Source={RelativeSource Self},Path=SelectedItem}"
+                            RemainingItemsThreshold="3"
+                            RemainingItemsThresholdReachedCommand="{Binding LoadMoreGamesCommand}"
+                            Margin="0">
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:Game">
+
+                        <Frame Margin="16,10"
+                               Padding="0"
+                               CornerRadius="14"
+                               BackgroundColor="#1A1A1A"
+                               HasShadow="True">
+                            <Frame.Shadow>
+                                <Shadow Offset="0,6" Radius="10" />
+                            </Frame.Shadow>
+
+                            <Grid RowDefinitions="200,Auto" ColumnDefinitions="*">
+
+                                <!-- Imagen -->
+                                <Grid Grid.Row="0">
+
+                                    <Image Source="{Binding BackgroundImage}"
+                                           Aspect="AspectFill"
+                                           HeightRequest="200">
+                                        <Image.Clip>
+                                            <RoundRectangleGeometry CornerRadius="14,14,0,0"
+                                                                    Rect="0,0,1000,200"/>
+                                        </Image.Clip>
+                                    </Image>
+
+                                    <!-- Degradado inferior -->
+                                    <Rectangle VerticalOptions="End"
+                                        HeightRequest="80"
+                                        InputTransparent="True">
+                                        <Rectangle.Fill>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                <GradientStop Color="#00000000" Offset="0.0"/>
+                                                <GradientStop Color="#AA000000" Offset="1.0"/>
+                                            </LinearGradientBrush>
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+
+                                </Grid>
+
+                                <!-- Rating -->
+                                <Frame Grid.Row="0"
+                                       BackgroundColor="#FF8C00"
+                                       Padding="6"
+                                       CornerRadius="8"
+                                       HasShadow="False"
+                                       HorizontalOptions="End"
+                                       VerticalOptions="Start"
+                                       Margin="10">
+                                    <Label Text="{Binding MetacriticFormatted}"
+                                           FontSize="13"
+                                           TextColor="White"
+                                           FontAttributes="Bold"/>
+                                </Frame>
+
+                                <!-- Título -->
+                                <StackLayout Grid.Row="1"
+                                             Padding="14">
+                                    <Label Text="{Binding Name}"
+                                           TextColor="White"
+                                           FontSize="20"
+                                           FontAttributes="Bold"
+                                           LineBreakMode="TailTruncation"
+                                           MaxLines="2"/>
+                                </StackLayout>
+
+                            </Grid>
+
+                        </Frame>
+
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <!-- Footer Loading -->
+                <CollectionView.Footer>
+                    <StackLayout Padding="10"
+                                 IsVisible="{Binding IsLoadingMore}"
+                                 HorizontalOptions="Center">
+                        <ActivityIndicator IsRunning="True"
+                                           Color="#FF8C00"
+                                           HeightRequest="32"/>
+                        <Label Text="Cargando más películas..."
+                               HorizontalTextAlignment="Center"
+                               TextColor="#AAAAAA"
+                               Margin="0,6,0,0"/>
+                    </StackLayout>
+                </CollectionView.Footer>
+
+                <!-- Empty View -->
+                <CollectionView.EmptyView>
+                    <StackLayout VerticalOptions="Center" Padding="30">
+                        <Label Text="😔"
+                               FontSize="56"
+                               HorizontalTextAlignment="Center"
+                               Margin="0,0,0,10"/>
+                        <Label Text="No se encontraron películas"
+                               FontSize="18"
+                               TextColor="#DDDDDD"
+                               HorizontalTextAlignment="Center"/>
+                        <Label Text="Intenta con otra búsqueda"
+                               FontSize="14"
+                               TextColor="#666"
+                               HorizontalTextAlignment="Center"
+                               Margin="0,5,0,0"/>
+                    </StackLayout>
+                </CollectionView.EmptyView>
+
+            </CollectionView>
+        </RefreshView>
+
+        <!-- Indicador de carga inicial -->
+        <ActivityIndicator Grid.Row="1"
+                           IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           Color="#FF8C00"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"
+                           HeightRequest="50"
+                           WidthRequest="50"/>
+    </Grid>
+</ContentPage>
