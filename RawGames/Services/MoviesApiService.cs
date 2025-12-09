@@ -61,7 +61,6 @@ namespace RawGames.Services
         {
             try
             {
-                // Si no hay búsqueda, regresa películas populares
                 if (string.IsNullOrWhiteSpace(query))
                     return await GetMoviesAsync(page);
 
